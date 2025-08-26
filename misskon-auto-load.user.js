@@ -182,12 +182,17 @@
 
     // 启动定时检查
     function startAutoCheck() {
+        // 如果已经加载完所有页面，不启动检查
+        if (allPagesLoaded) {
+            return;
+        }
+        
         if (!checkTimer) {
             // 先探测总页数
             detectTotalPages();
 
             checkTimer = setInterval(function() {
-                if (isNearBottom()) {
+                if (!allPagesLoaded && isNearBottom()) {
                     loadNextPage();
                 }
             }, config.checkInterval);
@@ -287,6 +292,11 @@
 
     // 获取下一页URL
     function getNextPageUrl() {
+        // 如果已经加载完所有页面，直接返回null
+        if (allPagesLoaded) {
+            return null;
+        }
+        
         const nextPageNumber = currentPageNumber + 1;
         
         // 检查是否超出总页数
@@ -311,6 +321,11 @@
     // 加载下一页内容
     function loadNextPage() {
         try {
+            // 双重检查：如果已经加载完所有页面，立即返回
+            if (allPagesLoaded) {
+                return;
+            }
+            
             if (isLoading) {
                 return;
             }
@@ -407,11 +422,15 @@
                     } finally {
                         isLoading = false;
 
-                        // 如果启用了连续加载，检查是否需要继续加载下一页
-                        if (config.continuousLoading && getNextPageUrl() && !allPagesLoaded) {
+                        // 检查是否已经是最后一页
+                        if (currentPageNumber >= totalPageNumber) {
+                            allPagesLoaded = true;
+                            stopAutoCheck();
+                            showStatus(`已加载完所有 ${totalPageNumber} 页内容`, 'success', 3000);
+                        } else if (config.continuousLoading && getNextPageUrl() && !allPagesLoaded) {
                             // 使用setTimeout避免可能的递归调用堆栈溢出
                             setTimeout(function() {
-                                if (isNearBottom()) {
+                                if (!allPagesLoaded && isNearBottom()) {
                                     loadNextPage();
                                 }
                             }, config.loadDelay);
@@ -500,7 +519,8 @@
 
     // 监听滚动事件
     window.addEventListener('scroll', function() {
-        if (isNearBottom()) {
+        // 加强检查：如果已经加载完所有页面，不响应滚动事件
+        if (!allPagesLoaded && isNearBottom()) {
             loadNextPage();
         }
     });
