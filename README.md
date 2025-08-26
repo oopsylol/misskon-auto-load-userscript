@@ -1,5 +1,12 @@
 # MissKon Auto Load Next Page - 油猴脚本
 
+![Tampermonkey](https://img.shields.io/badge/Tampermonkey-Compatible-green)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Version](https://img.shields.io/badge/Version-0.3-orange)
+
+**标签:** `userscript` `tampermonkey` `greasemonkey` `auto-pagination` `misskon` `图片浏览` `自动翻页` `lazy-loading` `无限滚动` `浏览器扩展`
+
 ## 📋 项目介绍
 
 这是一个专为 MissKon 网站设计的自动翻页油猴脚本，能够在浏览图片内容时自动加载下一页，提供流畅的无缝浏览体验。
